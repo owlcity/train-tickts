@@ -1,5 +1,11 @@
 import { PureComponent, memo, Component } from 'react'
+/**
+ * React.memo与PureComponent作用一样，都是用来减少组件渲染。区别如下：
 
+1.  React.memo针对函数式组件，PureComponent针对类组件
+
+2. React.memo可以传入第二个参数，props比较函数，自定义比较逻辑，PureComponent只会使用默认的props浅比较
+ */
 // function Child() {
 //   console.log('child')
 //   return <div>child</div>
@@ -19,6 +25,8 @@ import { PureComponent, memo, Component } from 'react'
 const Child = memo(function Child(props) {
   return <div>{props.person.age}</div>
 })
+
+console.log(undefined === undefined)
 
 class App extends Component {
   constructor(props) {
