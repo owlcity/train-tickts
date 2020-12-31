@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, createContext } from 'react'
+const BetteryContext = createContext() // 括号中为默认值
+const OnlineContext = createContext()
 
-function App() {
+function Leaf() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <BetteryContext.Consumer>
+      {(count) => (
+        <OnlineContext.Consumer>
+          {(online) => (
+            <h1>
+              count:{count}
+              online: {String(online)}
+            </h1>
+          )}
+        </OnlineContext.Consumer>
+      )}
+    </BetteryContext.Consumer>
+  )
 }
 
-export default App;
+function Middle() {
+  return <Leaf />
+}
+function App() {
+  // 声明一个叫 "count" 的 state 变量
+  const [count, setCount] = useState(60)
+  const [online, setOnline] = useState(false)
+  return (
+    <BetteryContext.Provider value={count}>
+      <OnlineContext.Provider value={online}>
+        <div className="App">
+          <button onClick={() => setCount(count + 1)}>Click count</button>
+          <button onClick={() => setOnline(!online)}>Click online</button>
+          <Middle />
+        </div>
+      </OnlineContext.Provider>
+    </BetteryContext.Provider>
+  )
+}
+
+export default App
