@@ -1,14 +1,19 @@
-import { useState, createContext, useContext } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 
-const CounterContext = createContext()
-
-function Child() {
-  console.log(useContext(CounterContext))
-  const counter = useContext(CounterContext)
-  return <h2>{counter}</h2>
+function Child(props) {
+  console.log('child')
+  return <h2 onClick={props.onClick}>{props.count}</h2>
 }
 function App() {
   const [count, setCount] = useState(0)
+  const [clickCount, setClickCount] = useState(0)
+  const double = useMemo(() => {
+    return count * 2
+  }, [count === 3])
+  const onClick = useCallback(() => {
+    console.log('click')
+    setClickCount((clickCount) => clickCount + 1)
+  })
   return (
     <div>
       <div>context</div>
@@ -17,13 +22,11 @@ function App() {
           setCount(count + 1)
         }}
       >
-        button
+        button click({count}) double:{double}
       </button>
       <h1>{count}</h1>
       <div>
-        <CounterContext.Provider value={count}>
-          <Child />
-        </CounterContext.Provider>
+        <Child count={clickCount} onClick={onClick} />
       </div>
     </div>
   )
