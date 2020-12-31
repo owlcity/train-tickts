@@ -1,32 +1,62 @@
-import { Component, lazy, Suspense } from 'react'
+import { PureComponent, memo, Component } from 'react'
 
-const About = lazy(() => import(/*webpackChunkName:"about"*/ './About'))
+// function Child() {
+//   console.log('child')
+//   return <div>child</div>
+// }
+
+// class Child extends PureComponent {
+//   constructor(props) {
+//     super(props)
+//     console.log(props)
+//   }
+//   render() {
+//     console.log('child')
+//     const { person } = this.props
+//     return <div>{person.age}</div>
+//   }
+// }
+const Child = memo(function Child(props) {
+  return <div>{props.person.age}</div>
+})
+
 class App extends Component {
-  state = {
-    hasError: false
-  }
-  static getDerivedStateFromError() {
-    return {
-      hasError: true
+  constructor(props) {
+    super(props)
+    this.state = {
+      count: 0,
+      person: {
+        age: 1
+      }
     }
   }
-  // componentDidCatch() {
-  //   this.setState({
-  //     hasError: true
-  //   })
-  // }
+  // const callBack = () => {}
   render() {
-    if (this.state.hasError) {
-      return <div>error</div>
-    }
+    // const [count, setCount] = useState(0)
+    const { person } = this.state
     return (
-      <Suspense fallback={<div>loading</div>}>
-        <div>
-          <About></About>
-        </div>
-      </Suspense>
+      <div>
+        <button
+          onClick={() => {
+            person.age++
+            this.setState({ count: this.state.count + 1 })
+          }}
+        >
+          {this.state.count}
+        </button>
+        <Child person={person}></Child>
+        {/* cb={() => {callBack()}} */}
+      </div>
     )
   }
 }
 
+// function App() {
+//   return (
+//     <div>
+//       <button onClick={() => setCount(0)}>{count}</button>
+//       <Child></Child>
+//     </div>
+//   )
+// }
 export default App
