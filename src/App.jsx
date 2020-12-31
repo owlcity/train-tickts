@@ -1,28 +1,32 @@
-import { Component, useState, createContext } from 'react'
-const BetteryContext = createContext() // 括号中为默认值
+import { Component, lazy, Suspense } from 'react'
 
-class Leaf extends Component {
-  static contextType = BetteryContext
-  render() {
-    const count = this.context
-    return <h1>count:{count}</h1>
+const About = lazy(() => import(/*webpackChunkName:"about"*/ './About'))
+class App extends Component {
+  state = {
+    hasError: false
   }
-}
-
-function Middle() {
-  return <Leaf />
-}
-function App() {
-  // 声明一个叫 "count" 的 state 变量
-  const [count, setCount] = useState(60)
-  return (
-    <BetteryContext.Provider value={count}>
-      <div className="App">
-        <button onClick={() => setCount(count + 1)}>Click count</button>
-        <Middle />
-      </div>
-    </BetteryContext.Provider>
-  )
+  static getDerivedStateFromError() {
+    return {
+      hasError: true
+    }
+  }
+  // componentDidCatch() {
+  //   this.setState({
+  //     hasError: true
+  //   })
+  // }
+  render() {
+    if (this.state.hasError) {
+      return <div>error</div>
+    }
+    return (
+      <Suspense fallback={<div>loading</div>}>
+        <div>
+          <About></About>
+        </div>
+      </Suspense>
+    )
+  }
 }
 
 export default App
